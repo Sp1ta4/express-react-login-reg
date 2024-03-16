@@ -19,5 +19,10 @@ router.post('/login', [
   check('password', 'Email or password entered incorrectly, try again!').trim().notEmpty()
 ],
   registrationController.login);
+router.post('/changePassword', [
+  check('password', 'Email or password entered incorrectly, try again!').trim().notEmpty(),
+  check('password', 'Password and confirm password do not match!').custom((value, { req }) => value === req.body.confirmPassword),
+],
+  registrationController.changePassword);
 
 module.exports = router;

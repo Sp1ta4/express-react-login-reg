@@ -54,6 +54,20 @@ module.exports = class RegisterController {
       username,
       _id
     }, process.env.JWT_SECRET, { expiresIn: '90d' })
-    res.json(token);
+    res.json({ token, user: jwt.verify(token, process.env.JWT_SECRET) });
+  }
+  static changePassword = async (req, res, next) => {
+    const { password, id } = req.body;
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(401).json({ error: errors.array() });
+    }
+    const hashPassword = await bcrypt.hash(password, 8);
+    const user = await User.findOneAndUpdate({ _id: id }, { password: hashPassword });
+    if (!user) {
+      return res.status(401).json({ error: 'Email or password entered incorrectly, try again!' });
+    }
+    return res.json(user);
+
   }
 }

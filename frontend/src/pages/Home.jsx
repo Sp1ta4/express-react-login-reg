@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import Header from '../components/Header'
-import ApiFunctions from '../../public/javascripts/api'
+import ApiFunctions from '../services/api'
 
 
 function Home() {
@@ -13,15 +13,23 @@ function Home() {
   const [gender, setGender] = useState('');
   async function onRegistration(values) {
     const responseToken = await ApiFunctions.registration(values)
-    console.log(responseToken.token);
+    console.log({ ...responseToken });
     setHasToken(responseToken.token);
-    responseToken.token && localStorage.setItem('token', responseToken);
+    responseToken.token
+      && localStorage.setItem('token', responseToken.token)
+      || localStorage.setItem('username', responseToken.user.username)
+      || localStorage.setItem('email', responseToken.user.email)
+      || localStorage.setItem('_id', responseToken.user._id);
   }
   async function onLogin(values) {
     const responseToken = await ApiFunctions.login(values)
-    console.log(responseToken.token);
     setHasToken(responseToken.token);
-    hasToken && localStorage.setItem('token', responseToken);
+    responseToken.token
+      && localStorage.setItem('token', responseToken.token)
+      || localStorage.setItem('username', responseToken.user.username)
+      || localStorage.setItem('email', responseToken.user.email)
+      || localStorage.setItem('_id', responseToken.user._id);
+    console.log(responseToken);
   }
   function clearInputs() {
     setEmail('');

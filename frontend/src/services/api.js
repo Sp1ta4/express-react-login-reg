@@ -24,6 +24,18 @@ class ApiFunctions {
       return response.json();
     }
   }
+  async changePassword(values) {
+    if (this.validator(values)) {
+      const response = await fetch(`${URL}/changePassword`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      });
+      return response.json();
+    }
+  }
   validator(values) {
     for (const key in values) {
       if (!values[key]) {
